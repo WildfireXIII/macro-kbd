@@ -13,7 +13,11 @@ for event in device.read_loop():
         print(keyevent.keycode, keyevent.keystate)
 
         if keyevent.keycode == 'KEY_A' and keyevent.keystate == 1:
-            subprocess.Popen(['python', '/home/dwl/lab/MacroKbd/actuators.py'])
+            #subprocess.Popen(['python', '/home/dwl/lab/MacroKbd/actuators.py'])
+            device.grab()
+            
+        if keyevent.keycode == 'KEY_B' and keyevent.keystate == 1:
+            device.ungrab()
 
 
         #if (evdev.ecodes.

@@ -33,8 +33,6 @@ for event in device.read_loop():
         ke = evdev.KeyEvent(event)
         print(ke.keycode, ke.keystate)
 
-
-
         if not commandmode:
             keys = device.active_keys(True)
             names = [thing[0] for thing in keys]
@@ -58,44 +56,4 @@ for event in device.read_loop():
                 ui.syn()
                 commandmode = False
             
-
-
-
-
-
-        
-'''
-
-        if not listenmode and not commandmode: # wait for caps lock
-            if ke.keycode == 'KEY_CAPSLOCK' and ke.keystate == 1:
-                listenmode = True
-
-
-                
-        elif listenmode: # caps lock is down
-            
-            # if a is pressed (sequence to enter command mode)
-            if ke.keycode == 'KEY_ESC' and ke.keystate == 1:
-                ui.write(e.EV_KEY, e.KEY_ESC, 1)
-                ui.write(e.EV_KEY, e.KEY_ESC, 0)
-                ui.write(e.EV_KEY, e.KEY_CAPSLOCK, 0)
-                ui.syn()
-                
-                grab()
-                
-                commandmode = True
-
-            elif ke.keystate != 2: # ignore held down keys
-                listenmode = False
-
-                
-        elif commandmode:
-            if ke.keycode == 'KEY_ENTER' and ke.keystate == 0:
-                ungrab()
-
-
-                
-                commandmode = False
-'''
-                
 ui.close()

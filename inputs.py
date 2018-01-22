@@ -28,8 +28,8 @@ if len(sys.argv) >= 2:
         settings = json.load(json_data_file)
 else:
     # assign setting defaults
-    #settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
-    settings = {"device_sel_mode":"search", "device":"AT Translated", "listen_mode":"normal"}
+    settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
+    #settings = {"device_sel_mode":"search", "device":"AT Translated", "listen_mode":"normal"}
 
 print("SETTINGS")
 print("--------------")
@@ -95,7 +95,8 @@ elif settings["device_sel_mode"] == "search":
     
 print("Using input device at",inputName)
 
-device = evdev.InputDevice('/dev/input/event0')
+#device = evdev.InputDevice('/dev/input/event0')
+device = evdev.InputDevice(inputName)
 print(device)
 
 for event in device.read_loop():

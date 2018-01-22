@@ -95,7 +95,6 @@ elif settings["device_sel_mode"] == "search":
     
 print("Using input device at",inputName)
 
-#device = evdev.InputDevice('/dev/input/event0')
 device = evdev.InputDevice(inputName)
 print(device)
 

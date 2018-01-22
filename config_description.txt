@@ -1,0 +1,11 @@
+device_sel_mode=exact|search|none
+
+exact means the exact device number will be given, with search a string to look for will be specified. none means the list will be displayed and the user can choose
+
+device=
+
+based on mode, is either the event number, or the string to search for
+
+listen_mode=normal|constant
+
+normal means it waits for the key combination before entering command mode, constant means it's always in command mode

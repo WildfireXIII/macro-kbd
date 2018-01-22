@@ -4,6 +4,7 @@ import subprocess
 import keyboard
 import sys
 import json
+import re
 
 from evdev import UInput, ecodes as e
 
@@ -12,6 +13,11 @@ ui = UInput()
 listenmode = False # caps lock pressed, wait for a for sequence start
 commandmode = False
 
+deviceList = {}
+
+#deviceNumbers = []
+#deviceEvents = []
+#deviceNames = []
 
 # read in config
 settings = {}
@@ -22,9 +28,15 @@ if len(sys.argv) >= 2:
         settings = json.load(json_data_file)
 else:
     # assign setting defaults
-    settings = { "device_sel_mode"
-    pass
+    #settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
+    settings = {"device_sel_mode":"search", "device":"AT Translated", "listen_mode":"normal"}
 
+print("SETTINGS")
+print("--------------")
+print("Device selection mode:",settings["device_sel_mode"])
+print("Device selection string:",settings["device"])
+print("Listen mode:",settings["listen_mode"])
+print("--------------")
 
 
 def grab():
@@ -50,16 +62,38 @@ def enter():
     ui.syn()
 
 
-def listDevices():
+def getDevices():
     devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
     for device in devices:
-        print(device.fn, device.name, device.phys) 
+        m = re.search("(\d+)", device.fn) # get event input number
+        deviceList[m.group(0)] = [device.fn, device.name]
 
+def displayDevices():
+    for index in deviceList:
+        print(index,"-",deviceList[index])
+
+getDevices()
+
+inputName = ""
 
 # display devices and offer choice to user
-listDevices()
-
-
+if settings["device_sel_mode"] == "none":
+    displayDevices()
+    choice = input("Enter device number: ")
+    inputName = deviceList[choice][0]
+elif settings["device_sel_mode"] == "exact":
+    deviceInfo = deviceList[str(settings["device"])]
+    inputName = deviceInfo[0]
+elif settings["device_sel_mode"] == "search":
+    for index in deviceList:
+        deviceInfo = deviceList[str(index)]
+        m = re.search(settings["device"], deviceInfo[1])
+        if m: inputName = deviceInfo[0]
+    if inputName == "":
+        print("ERROR: device",settings["device"],"not found")
+        exit()
+    
+print("Using input device at",inputName)
 
 device = evdev.InputDevice('/dev/input/event0')
 print(device)

@@ -18,6 +18,9 @@ ui = UInput()
 listenmode = False # caps lock pressed, wait for a for sequence start
 commandmode = False
 
+
+mode = "git"
+
 deviceList = {}
 
 #deviceNumbers = []
@@ -156,45 +159,53 @@ for event in device.read_loop():
 
             # ---- git commands ----
 
-            # push
-            if ke.keycode == 'KEY_DOT' and ke.keystate == 0:
-                gui.typewrite("git push origin")
-                ungrab()
-                commandmode = False
-                setStatus("Listening...")
-                enter()
+            if mode == "git":
+                # push
+                if ke.keycode == 'KEY_DOT' and ke.keystate == 0:
+                    gui.typewrite("git push origin")
+                    ungrab()
+                    commandmode = False
+                    setStatus("Listening...")
+                    enter()
 
-            # pull
-            if ke.keycode == 'KEY_COMMA' and ke.keystate == 0:
-                gui.typewrite("git pull origin")
-                ungrab()
-                commandmode = False
-                setStatus("Listening...")
-                enter()
-                
-            # status
-            if ke.keycode == 'KEY_S' and ke.keystate == 0:
-                gui.typewrite("git status")
-                ungrab()
-                commandmode = False
-                setStatus("Listening...")
-                enter()
-                
-            # commit
-            if ke.keycode == 'KEY_C' and ke.keystate == 0:
-                gui.typewrite("git commit -a -m \"\"")
-                gui.press('left')
-                ungrab()
-                commandmode = False
-                setStatus("Listening...")
+                # pull
+                if ke.keycode == 'KEY_COMMA' and ke.keystate == 0:
+                    gui.typewrite("git pull origin")
+                    ungrab()
+                    commandmode = False
+                    setStatus("Listening...")
+                    enter()
+                    
+                # status
+                if ke.keycode == 'KEY_S' and ke.keystate == 0:
+                    gui.typewrite("git status")
+                    ungrab()
+                    commandmode = False
+                    setStatus("Listening...")
+                    enter()
+                    
+                # commit
+                if ke.keycode == 'KEY_C' and ke.keystate == 0:
+                    gui.typewrite("git commit -a -m \"\"")
+                    gui.press('left')
+                    ungrab()
+                    commandmode = False
+                    setStatus("Listening...")
 
-            # add
-            if ke.keycode == 'KEY_A' and ke.keystate == 0:
-                gui.typewrite("git add -A")
-                ungrab()
-                commandmode = False
-                setStatus("Listening...")
-                enter()
+                # add
+                if ke.keycode == 'KEY_A' and ke.keystate == 0:
+                    gui.typewrite("git add -A")
+                    ungrab()
+                    commandmode = False
+                    setStatus("Listening...")
+                    enter()
             
-        if settings["listen_mode"] == "constant": setStatus("ACTIVE")
+        statusString = ""
+        
+        if settings["listen_mode"] == "constant": 
+            statusString = "<span color='#00FF00'>ACTIVE"
+            #setStatus("<span color='#00FF00'>ACTIVE</span>")
+
+        statusString += " (" + mode + ")</span>"
+        setStatus(statusString)
 ui.close()

@@ -4,9 +4,8 @@
 if [[ $1 -eq "test1" ]]; then
 	echo "Testing 1 config"
 	sudo python inputs.py test1_config.json "$DATA_DIR"
+else
+	sudo python inputs.py config.json "$DATA_DIR"
+	#sudo python inputs.py 
+	#sudo python $BIN_DIR/THING/inputs.py $CONF_DIR/THING/config.json
 fi
-
-	
-sudo python inputs.py config.json "$DATA_DIR"
-#sudo python inputs.py 
-#sudo python $BIN_DIR/THING/inputs.py $CONF_DIR/THING/config.json

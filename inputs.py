@@ -308,6 +308,12 @@ for event in device.read_loop():
                         commandmode = False
                         enter()
                         
+                    if ke.keycode == 'KEY_8' and ke.keystate == 0:
+                        gui.typewrite("ping 8.8.8.8")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        
                     if ke.keycode == 'KEY_S' and ke.keystate == 0:
                         gui.typewrite("grep -rl \"\"")
                         gui.press('left')

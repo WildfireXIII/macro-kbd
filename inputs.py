@@ -23,10 +23,6 @@ mode = "git"
 
 deviceList = {}
 
-#deviceNumbers = []
-#deviceEvents = []
-#deviceNames = []
-
 # read in config
 settings = {}
 
@@ -37,8 +33,6 @@ if len(sys.argv) >= 2:
         settings = json.load(json_data_file)
 else:
     # assign setting defaults
-    #settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
-    #settings = {"device_sel_mode":"search", "device":"AT Translated", "listen_mode":"normal"}
     settings = {"device_sel_mode":"none", "device":0, "listen_mode":"none"}
 
 print("SETTINGS")
@@ -61,10 +55,12 @@ def ungrab():
         device.ungrab()
         print("UNGRABBED")
     except: pass
-    ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 1)
-    ui.write(e.EV_KEY, e.KEY_LEFTMETA, 1)
-    ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 0)
-    ui.write(e.EV_KEY, e.KEY_LEFTMETA, 0)
+    #ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 1)
+    #ui.write(e.EV_KEY, e.KEY_LEFTMETA, 1)
+    #ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 0)
+    #ui.write(e.EV_KEY, e.KEY_LEFTMETA, 0)
+    ui.write(e.EV_KEY, e.KEY_SYSRQ, 1)
+    ui.write(e.EV_KEY, e.KEY_SYSRQ, 0)
     ui.syn()
 
 def enter():
@@ -87,6 +83,19 @@ def displayDevices():
 def setStatus(string):
     with open(statusfile, 'w') as sfile:
         sfile.write(string)
+
+def updateStatus():
+    statusString = ""
+    
+    if settings["listen_mode"] == "constant" or commandmode: 
+        statusString = "<span color='#00FF00'>ACTIVE"
+        #setStatus("<span color='#00FF00'>ACTIVE</span>")
+    else:
+        statusString = "<span>Listening..."
+
+    statusString += " (" + mode + ")</span>"
+    setStatus(statusString)
+    
 
 getDevices()
 
@@ -130,6 +139,9 @@ print(device)
 
 if settings["listen_mode"] == "constant": grab()
 
+
+updateStatus()
+
 for event in device.read_loop():
     if event.type == evdev.ecodes.EV_KEY:
         #print(evdev.categorize(event))
@@ -140,13 +152,15 @@ for event in device.read_loop():
             keys = device.active_keys(True)
             names = [thing[0] for thing in keys]
 
-            if 'KEY_LEFTMETA' in names and 'KEY_RIGHTCTRL' in names:
+            #if 'KEY_LEFTMETA' in names and 'KEY_RIGHTCTRL' in names:
+            if 'KEY_SYSRQ' in names:
                 print(".........")
                 commandmode = True
-                setStatus("ACTIVE")
+                #updateStatus()
                 ui.write_event(ke)
-                ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 0)
-                ui.write(e.EV_KEY, e.KEY_LEFTMETA, 0)
+                #ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 0)
+                #ui.write(e.EV_KEY, e.KEY_LEFTMETA, 0)
+                ui.write(e.EV_KEY, e.KEY_SYSRQ, 0)
                 ui.syn()
                 grab()
                 
@@ -157,15 +171,35 @@ for event in device.read_loop():
                 setStatus("Listening...")
 
 
-            # ---- git commands ----
+            if ke.keycode == 'KEY_ESC' and ke.keystate == 0:
+                if mode != "none": 
+                    print("Leaving mode '" + mode + "'")
+                    mode = "none"
+                else: 
+                    print("Exiting...")
+                    settings["listen_mode"] = "none"
+                    commandmode = False
+                    ungrab()
+                    setStatus("<span color='#999999'>off</span>")
+                    exit()
 
-            if mode == "git":
+
+            if mode == "none":
+                if ke.keycode == 'KEY_G' and ke.keystate == 0:
+                    print("Entering mode 'git'")
+                    mode = "git"
+                elif ke.keycode == 'KEY_B' and ke.keystate == 0:
+                    print("Entering mode 'bash'")
+                    mode = "bash"
+
+
+            # ---- git commands ----
+            elif mode == "git":
                 # push
                 if ke.keycode == 'KEY_DOT' and ke.keystate == 0:
                     gui.typewrite("git push origin")
                     ungrab()
                     commandmode = False
-                    setStatus("Listening...")
                     enter()
 
                 # pull
@@ -173,7 +207,6 @@ for event in device.read_loop():
                     gui.typewrite("git pull origin")
                     ungrab()
                     commandmode = False
-                    setStatus("Listening...")
                     enter()
                     
                 # status
@@ -181,7 +214,6 @@ for event in device.read_loop():
                     gui.typewrite("git status")
                     ungrab()
                     commandmode = False
-                    setStatus("Listening...")
                     enter()
                     
                 # commit
@@ -190,22 +222,48 @@ for event in device.read_loop():
                     gui.press('left')
                     ungrab()
                     commandmode = False
-                    setStatus("Listening...")
 
                 # add
                 if ke.keycode == 'KEY_A' and ke.keystate == 0:
                     gui.typewrite("git add -A")
                     ungrab()
                     commandmode = False
-                    setStatus("Listening...")
                     enter()
-            
-        statusString = ""
-        
-        if settings["listen_mode"] == "constant": 
-            statusString = "<span color='#00FF00'>ACTIVE"
-            #setStatus("<span color='#00FF00'>ACTIVE</span>")
 
-        statusString += " (" + mode + ")</span>"
-        setStatus(statusString)
+                # log
+                if ke.keycode == 'KEY_L' and ke.keystate == 0:
+                    gui.typewrite("git log --oneline")
+                    ungrab()
+                    commandmode = False
+                    enter()
+                
+            # ---- bash commands ----
+            elif mode == "bash":
+                # push
+                if ke.keycode == 'KEY_UP' and ke.keystate == 0:
+                    gui.typewrite("cd ..")
+                    ungrab()
+                    commandmode = False
+                    enter()
+                    
+                if ke.keycode == 'KEY_LEFT' and ke.keystate == 0:
+                    gui.typewrite("cd -")
+                    ungrab()
+                    commandmode = False
+                    enter()
+                    
+                if ke.keycode == 'KEY_DOWN' and ke.keystate == 0:
+                    gui.typewrite("cd ~")
+                    ungrab()
+                    commandmode = False
+                    enter()
+                    
+                if ke.keycode == 'KEY_S' and ke.keystate == 0:
+                    gui.typewrite("grep -rl \"\"")
+                    gui.press('left')
+                    ungrab()
+                    commandmode = False
+
+        updateStatus() 
+            
 ui.close()

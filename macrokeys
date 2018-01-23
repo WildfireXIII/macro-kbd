@@ -1,9 +1,12 @@
 #!/bin/bash
 
 
-if [[ $1 -eq "test1" ]]; then
+if [[ $1 == "test1" ]]; then
 	echo "Testing 1 config"
 	sudo python inputs.py test1_config.json "$DATA_DIR"
+elif [[ $1 == "test2" ]]; then
+	echo "Testing 2 config"
+	sudo python inputs.py test2_config.json "$DATA_DIR"
 else
 	sudo python inputs.py config.json "$DATA_DIR"
 	#sudo python inputs.py 

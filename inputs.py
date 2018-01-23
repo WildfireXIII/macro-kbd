@@ -28,8 +28,9 @@ if len(sys.argv) >= 2:
         settings = json.load(json_data_file)
 else:
     # assign setting defaults
-    settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
+    #settings = {"device_sel_mode":"none", "device":0, "listen_mode":"normal"}
     #settings = {"device_sel_mode":"search", "device":"AT Translated", "listen_mode":"normal"}
+    settings = {"device_sel_mode":"none", "device":0, "listen_mode":"none"}
 
 print("SETTINGS")
 print("--------------")
@@ -92,6 +93,20 @@ elif settings["device_sel_mode"] == "search":
     if inputName == "":
         print("ERROR: device",settings["device"],"not found")
         exit()
+
+if settings["listen_mode"] == "none":
+    print("Listen modes")
+    print("0 - normal (wait for key combination)")
+    print("1 - constant (macro mode always on)")
+    choice = input("Select listen mode: ")
+    if choice == "0":
+        settings["listen_mode"] = "normal"
+    elif choice == "1":
+        settings["listen_mode"] = "constant"
+    else:
+        print("ERROR: invalid selection")
+        exit()
+
     
 print("Using input device at",inputName)
 

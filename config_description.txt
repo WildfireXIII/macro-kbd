@@ -6,6 +6,6 @@ device=
 
 based on mode, is either the event number, or the string to search for
 
-listen_mode=normal|constant
+listen_mode=normal|constant|none
 
-normal means it waits for the key combination before entering command mode, constant means it's always in command mode
+normal means it waits for the key combination before entering command mode, constant means it's always in command mode, none means user will be prompted

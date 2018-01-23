@@ -53,6 +53,7 @@ def grab():
     except: pass
 
 def ungrab():
+    if settings["listen_mode"] == "constant": return
     try:
         device.ungrab()
         print("UNGRABBED")
@@ -124,13 +125,15 @@ print("Using input device at",inputName)
 device = evdev.InputDevice(inputName)
 print(device)
 
+if settings["listen_mode"] == "constant": grab()
+
 for event in device.read_loop():
     if event.type == evdev.ecodes.EV_KEY:
         #print(evdev.categorize(event))
         ke = evdev.KeyEvent(event)
         print(ke.keycode, ke.keystate)
 
-        if not commandmode:
+        if not commandmode and settings["listen_mode"] != "constant":
             keys = device.active_keys(True)
             names = [thing[0] for thing in keys]
 
@@ -193,4 +196,5 @@ for event in device.read_loop():
                 setStatus("Listening...")
                 enter()
             
+        if settings["listen_mode"] == "constant": setStatus("ACTIVE")
 ui.close()

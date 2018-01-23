@@ -20,6 +20,7 @@ commandmode = False
 
 
 mode = "git"
+submode = None
 
 deviceList = {}
 
@@ -89,11 +90,13 @@ def updateStatus():
     
     if settings["listen_mode"] == "constant" or commandmode: 
         statusString = "<span color='#00FF00'>ACTIVE"
-        #setStatus("<span color='#00FF00'>ACTIVE</span>")
     else:
         statusString = "<span>Listening..."
 
-    statusString += " (" + mode + ")</span>"
+    statusString += " (" + mode
+    if submode is not None: 
+        statusString += "/" + submode
+    statusString += ")</span>"
     setStatus(statusString)
     
 
@@ -169,6 +172,7 @@ for event in device.read_loop():
                 ungrab()
                 commandmode = False
                 setStatus("Listening...")
+                #submode = None
 
 
             if ke.keycode == 'KEY_ESC' and ke.keystate == 0:
@@ -239,30 +243,84 @@ for event in device.read_loop():
                 
             # ---- bash commands ----
             elif mode == "bash":
-                # push
-                if ke.keycode == 'KEY_UP' and ke.keystate == 0:
-                    gui.typewrite("cd ..")
-                    ungrab()
-                    commandmode = False
-                    enter()
-                    
-                if ke.keycode == 'KEY_LEFT' and ke.keystate == 0:
-                    gui.typewrite("cd -")
-                    ungrab()
-                    commandmode = False
-                    enter()
-                    
-                if ke.keycode == 'KEY_DOWN' and ke.keystate == 0:
-                    gui.typewrite("cd ~")
-                    ungrab()
-                    commandmode = False
-                    enter()
-                    
-                if ke.keycode == 'KEY_S' and ke.keystate == 0:
-                    gui.typewrite("grep -rl \"\"")
-                    gui.press('left')
-                    ungrab()
-                    commandmode = False
+                if submode == "pacman":
+                    if ke.keycode == 'KEY_P' and ke.keystate == 0:
+                        gui.press('left')
+                        gui.typewrite("yu")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        submode = None
+                    else:
+                        if ke.keystate == 0:
+                            submode = None
+                            
+                elif submode == "labs-get":
+                    if ke.keycode == 'KEY_L' and ke.keystate == 0:
+                        gui.typewrite('-list')
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        submode = None
+                    if ke.keycode == 'KEY_I' and ke.keystate == 0:
+                        gui.typewrite('-install ')
+                        ungrab()
+                        commandmode = False
+                        submode = None
+                    if ke.keycode == 'KEY_A' and ke.keystate == 0:
+                        gui.typewrite('-list installed')
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        submode = None
+                    if ke.keycode == 'KEY_U' and ke.keystate == 0:
+                        gui.typewrite('-update ') 
+                        ungrab()
+                        commandmode = False
+                        submode = None
+                    else:
+                        if ke.keystate == 0:
+                            submode = None
+                
+                else:
+                    if ke.keycode == 'KEY_UP' and ke.keystate == 0:
+                        gui.typewrite("cd ..")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        
+                    if ke.keycode == 'KEY_LEFT' and ke.keystate == 0:
+                        gui.typewrite("cd -")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        
+                    if ke.keycode == 'KEY_DOWN' and ke.keystate == 0:
+                        gui.typewrite("cd ~")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        
+                    if ke.keycode == 'KEY_S' and ke.keystate == 0:
+                        gui.typewrite("grep -rl \"\"")
+                        gui.press('left')
+                        ungrab()
+                        commandmode = False
+                        
+                    if ke.keycode == 'KEY_P' and ke.keystate == 0:
+                        gui.typewrite("sudo pacman -S ")
+                        ungrab()
+                        commandmode = False
+                        submode = "pacman"
+                        
+                    if ke.keycode == 'KEY_Y' and ke.keystate == 0:
+                        gui.typewrite("yaourt -S ")
+                        ungrab()
+                        commandmode = False
+
+                    if ke.keycode == 'KEY_L' and ke.keystate == 0:
+                        gui.typewrite("labs-get ")
+                        submode = "labs-get"
 
         updateStatus() 
             

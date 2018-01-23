@@ -240,6 +240,13 @@ for event in device.read_loop():
                     ungrab()
                     commandmode = False
                     enter()
+
+                # list branches
+                if ke.keycode == 'KEY_B' and ke.keystate == 0:
+                    gui.typewrite("git branch")
+                    ungrab()
+                    commandmode = False
+                    enter()
                 
             # ---- bash commands ----
             elif mode == "bash":

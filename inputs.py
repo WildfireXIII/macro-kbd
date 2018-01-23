@@ -5,6 +5,11 @@ import keyboard
 import sys
 import json
 import re
+import os
+
+
+
+
 
 from evdev import UInput, ecodes as e
 
@@ -23,6 +28,7 @@ deviceList = {}
 settings = {}
 
 if len(sys.argv) >= 2:
+    statusfile = sys.argv[2] + "/macrokbd/status.dat"
     config_file = sys.argv[1]
     with open(config_file) as json_data_file:
         settings = json.load(json_data_file)
@@ -72,6 +78,11 @@ def getDevices():
 def displayDevices():
     for index in deviceList:
         print(index,"-",deviceList[index])
+
+
+def setStatus(string):
+    with open(statusfile, 'w') as sfile:
+        sfile.write(string)
 
 getDevices()
 
@@ -126,6 +137,7 @@ for event in device.read_loop():
             if 'KEY_LEFTMETA' in names and 'KEY_RIGHTCTRL' in names:
                 print(".........")
                 commandmode = True
+                setStatus("ACTIVE")
                 ui.write_event(ke)
                 ui.write(e.EV_KEY, e.KEY_RIGHTCTRL, 0)
                 ui.write(e.EV_KEY, e.KEY_LEFTMETA, 0)
@@ -136,6 +148,7 @@ for event in device.read_loop():
             if ke.keycode == 'KEY_ENTER' and ke.keystate == 0:
                 ungrab()
                 commandmode = False
+                setStatus("Listening...")
 
 
             # ---- git commands ----
@@ -145,6 +158,7 @@ for event in device.read_loop():
                 gui.typewrite("git push origin")
                 ungrab()
                 commandmode = False
+                setStatus("Listening...")
                 enter()
 
             # pull
@@ -152,6 +166,7 @@ for event in device.read_loop():
                 gui.typewrite("git pull origin")
                 ungrab()
                 commandmode = False
+                setStatus("Listening...")
                 enter()
                 
             # status
@@ -159,6 +174,7 @@ for event in device.read_loop():
                 gui.typewrite("git status")
                 ungrab()
                 commandmode = False
+                setStatus("Listening...")
                 enter()
                 
             # commit
@@ -167,5 +183,14 @@ for event in device.read_loop():
                 gui.press('left')
                 ungrab()
                 commandmode = False
+                setStatus("Listening...")
+
+            # add
+            if ke.keycode == 'KEY_A' and ke.keystate == 0:
+                gui.typewrite("git add -A")
+                ungrab()
+                commandmode = False
+                setStatus("Listening...")
+                enter()
             
 ui.close()

@@ -8,7 +8,8 @@ elif [[ $1 == "test2" ]]; then
 	echo "Testing 2 config"
 	sudo python inputs.py test2_config.json "$DATA_DIR"
 else
-	sudo python inputs.py config.json "$DATA_DIR"
+	#sudo python inputs.py config.json "$DATA_DIR"
+	sudo python inputs.py "$CONF_DIR/config.json" "$DATA_DIR"
 	#sudo python inputs.py 
 	#sudo python $BIN_DIR/THING/inputs.py $CONF_DIR/THING/config.json
 fi

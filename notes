@@ -1,5 +1,0 @@
-have actuators script and inputs script
-
-
-on dedicated keyboard, the actkbd is the actuators
-otherwise, i3 has keycombo to initiate inputs script

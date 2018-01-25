@@ -8,9 +8,6 @@ import re
 import os
 
 
-
-
-
 from evdev import UInput, ecodes as e
 
 ui = UInput()
@@ -29,6 +26,12 @@ settings = {}
 
 if len(sys.argv) >= 2:
     statusfile = sys.argv[2] + "/macrokbd/status.dat"
+
+    # create status if not applicable
+    if not os.path.exists(statusfile): 
+        f = open(statusfile, 'w+')
+        f.close()
+    
     config_file = sys.argv[1]
     with open(config_file) as json_data_file:
         settings = json.load(json_data_file)

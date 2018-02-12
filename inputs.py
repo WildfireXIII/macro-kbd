@@ -229,6 +229,12 @@ for event in device.read_loop():
                     gui.press('left')
                     ungrab()
                     commandmode = False
+                    
+                # checkout branch (not new)
+                if ke.keycode == 'KEY_K' and ke.keystate == 0:
+                    gui.typewrite("git checkout ")
+                    ungrab()
+                    commandmode = False
 
                 # add
                 if ke.keycode == 'KEY_A' and ke.keystate == 0:

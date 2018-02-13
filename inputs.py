@@ -235,6 +235,11 @@ for event in device.read_loop():
                     gui.typewrite("git checkout ")
                     ungrab()
                     commandmode = False
+                    
+                if ke.keycode == 'KEY_R' and ke.keystate == 0:
+                    gui.typewrite("git reset --hard ")
+                    ungrab()
+                    commandmode = False
 
                 # add
                 if ke.keycode == 'KEY_A' and ke.keystate == 0:

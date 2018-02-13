@@ -355,8 +355,15 @@ for event in device.read_loop():
                         ungrab()
                         commandmode = False
                         enter()
+                        
                     if ke.keycode == 'KEY_2' and ke.keystate == 0:
                         gui.typewrite("ssh namartinda42@10.10.8.101")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                        
+                    if ke.keycode == 'KEY_3' and ke.keystate == 0:
+                        gui.typewrite("ssh namartinda42@108.61.203.123")
                         ungrab()
                         commandmode = False
                         enter()

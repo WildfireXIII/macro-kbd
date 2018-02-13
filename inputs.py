@@ -343,6 +343,18 @@ for event in device.read_loop():
                     if ke.keycode == 'KEY_L' and ke.keystate == 0:
                         gui.typewrite("labs-get ")
                         submode = "labs-get"
+                        
+                    # ssh targets 
+                    if ke.keycode == 'KEY_1' and ke.keystate == 0:
+                        gui.typewrite("ssh dwl@dwl.ddns.net")
+                        ungrab()
+                        commandmode = False
+                        enter()
+                    if ke.keycode == 'KEY_2' and ke.keystate == 0:
+                        gui.typewrite("ssh namartinda42@10.10.8.101")
+                        ungrab()
+                        commandmode = False
+                        enter()
 
         updateStatus() 
             

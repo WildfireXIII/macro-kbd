@@ -367,6 +367,12 @@ for event in device.read_loop():
                         ungrab()
                         commandmode = False
                         enter()
+                        
+                    if ke.keycode == 'KEY_4' and ke.keystate == 0:
+                        gui.typewrite("ssh -i ~/.ssh/firstkey.pem ubnuntu@ec2-52-14-68-51.us-east-2.compute.amazonaws.com")
+                        ungrab()
+                        commandmode = False
+                        enter()
 
         updateStatus() 
             

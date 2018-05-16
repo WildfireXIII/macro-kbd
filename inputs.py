@@ -16,6 +16,9 @@ listenmode = False # caps lock pressed, wait for a for sequence start
 commandmode = False
 
 
+shiftDown = False
+metaDown = False
+
 mode = "git"
 submode = None
 
@@ -154,6 +157,18 @@ for event in device.read_loop():
         ke = evdev.KeyEvent(event)
         print(ke.keycode, ke.keystate)
 
+
+        # things that get handled no matter what (shift states)
+        if (ke.keycode == "KEY_LEFTSHIFT" or ke.keycode == "KEY_RIGHTSHIFT") and ke.keystate == 1:
+            shiftDown = True
+        elif (ke.keycode == "KEY_LEFTSHIFT" or ke.keycode == "KEY_RIGHTSHIFT") and ke.keystate == 0:
+            shiftDown = False
+        elif (ke.keycode == "KEY_LEFTMETA" or ke.keycode == "KEY_RIGHTMETA") and ke.keystate == 1:
+            metaDown = True
+        elif (ke.keycode == "KEY_LEFTMETA" or ke.keycode == "KEY_RIGHTMETA") and ke.keystate == 0:
+            metaDown = False
+        
+
         if not commandmode and settings["listen_mode"] != "constant":
             keys = device.active_keys(True)
             names = [thing[0] for thing in keys]
@@ -191,7 +206,7 @@ for event in device.read_loop():
                     exit()
 
 
-            if mode == "none":
+            if mode == "none" or metaDown == True:
                 if ke.keycode == 'KEY_G' and ke.keystate == 0:
                     print("Entering mode 'git'")
                     mode = "git"
@@ -204,10 +219,16 @@ for event in device.read_loop():
             elif mode == "git":
                 # push
                 if ke.keycode == 'KEY_DOT' and ke.keystate == 0:
-                    gui.typewrite("git push origin")
-                    ungrab()
-                    commandmode = False
-                    enter()
+
+                    if shiftDown:
+                        gui.typewrite("git push -u origin ")
+                        ungrab()
+                        commandmode = False
+                    if not shiftDown:
+                        gui.typewrite("git push origin")
+                        ungrab()
+                        commandmode = False
+                        enter()
 
                 # pull
                 if ke.keycode == 'KEY_COMMA' and ke.keystate == 0:
@@ -266,6 +287,20 @@ for event in device.read_loop():
                     ungrab()
                     commandmode = False
                     enter()
+
+                # inititalize a new git repo
+                if ke.keycode == 'KEY_I' and ke.keystate == 0:
+                    gui.typewrite("git init")
+                    ungrab()
+                    commandmode = False
+                    enter()
+
+                # add origin remote
+                if ke.keycode == 'KEY_O' and ke.keystate == 0:
+                    gui.typewrite("git remote add origin ")
+                    ungrab()
+                    commandmode = False
+                
                 
             # ---- bash commands ----
             elif mode == "bash":

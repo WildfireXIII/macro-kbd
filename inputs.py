@@ -301,6 +301,11 @@ for event in device.read_loop():
                     ungrab()
                     commandmode = False
                 
+                # show differences
+                if ke.keycode == 'KEY_D' and ke.keystate == 0:
+                    gui.typewrite("git diff ")
+                    ungrab()
+                    commandmode = False
                 
             # ---- bash commands ----
             elif mode == "bash":

@@ -95,7 +95,7 @@ def updateStatus():
     statusString = ""
     
     if settings["listen_mode"] == "constant" or commandmode: 
-        statusString = "<span color='#00FF00'>ACTIVE"
+        statusString = "<span color='#FFFFFF'>ACTIVE"
     else:
         statusString = "<span>Listening..."
 

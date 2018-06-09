@@ -1,3 +1,16 @@
+#***************************************************************************
+#
+#  File: inputs.py
+#  Date created: 12/19/2017
+#  Date edited: 06/09/2018
+#
+#  Author: Nathan Martindale
+#  Copyright © 2018 Digital Warrior Labs
+#
+#  Description: Handles all keyboard input and macros
+#
+#***************************************************************************
+
 import pyautogui as gui
 import evdev
 import subprocess
@@ -213,6 +226,9 @@ for event in device.read_loop():
                 elif ke.keycode == 'KEY_B' and ke.keystate == 0:
                     print("Entering mode 'bash'")
                     mode = "bash"
+                elif ke.keycode == 'KEY_SPACE' and ke.keystate == 0:
+                    print("Entering mode 'general'")
+                    mode = "general"
 
 
             # ---- git commands ----
@@ -418,6 +434,20 @@ for event in device.read_loop():
                         ungrab()
                         commandmode = False
                         enter()
+                        
+            # ---- general commands ----
+            elif mode == "general":
+                # email 1
+                if ke.keycode == 'KEY_1' and ke.keystate == 0:
+                    gui.typewrite("nmblenderdude0@gmail.com")
+                    ungrab()
+                    commandmode = False
+                # email 2
+                if ke.keycode == 'KEY_2' and ke.keystate == 0:
+                    gui.typewrite("namartinda42@students.tntech.edu")
+                    ungrab()
+                    commandmode = False
+                    
 
         updateStatus() 
             

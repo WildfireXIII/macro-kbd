@@ -2,7 +2,7 @@
 #
 #  File: inputs.py
 #  Date created: 12/19/2017
-#  Date edited: 06/09/2018
+#  Date edited: 06/14/2018
 #
 #  Author: Nathan Martindale
 #  Copyright © 2018 Digital Warrior Labs
@@ -430,7 +430,7 @@ for event in device.read_loop():
                         enter()
                         
                     if ke.keycode == 'KEY_4' and ke.keystate == 0:
-                        gui.typewrite("ssh -i ~/.ssh/firstkey.pem ubnuntu@ec2-52-14-68-51.us-east-2.compute.amazonaws.com")
+                        gui.typewrite("ssh namartinda42@149.149.134.113")
                         ungrab()
                         commandmode = False
                         enter()

@@ -2,7 +2,7 @@
 #
 #  File: inputs.py
 #  Date created: 12/19/2017
-#  Date edited: 06/14/2018
+#  Date edited: 06/27/2018
 #
 #  Author: Nathan Martindale
 #  Copyright © 2018 Digital Warrior Labs
@@ -166,6 +166,10 @@ updateStatus()
 
 for event in device.read_loop():
     if event.type == evdev.ecodes.EV_KEY:
+
+        # handle 
+
+        
         #print(evdev.categorize(event))
         ke = evdev.KeyEvent(event)
         print(ke.keycode, ke.keystate)
